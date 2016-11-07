@@ -2,7 +2,8 @@
 
 modprobe i2c-dev || true
 #modprobe i2c-bcm2708
-modprobe v4l2_common || true
-modprobe videodev || true
+modprobe bcm2835-v4l2 || true
+
+v4l2-ctl --overlay=1
 
 npm start
