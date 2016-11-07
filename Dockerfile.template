@@ -1,13 +1,12 @@
-FROM resin/%%RESIN_MACHINE_NAME%%-alpine-node:6
+FROM resin/%%RESIN_MACHINE_NAME%%-node:6
 
 ENV INITSYSTEM on
 
 # here we install apt dependencies. We also remove the apt lists in the same step,
 # this reduces the size of the docker image.
-RUN apk add --update \
-    --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
-    build-base raspberrypi && \
-    rm -rf /var/cache/apk/*
+RUN apt-get --update && apt-get install -y \
+    build-essential libraspberrypi0 libraspberrypi-bin && \
+    rm -rf /var/lib/apt/lists/*
 
 # We set the working directory for the next few commands
 WORKDIR /usr/src/app
