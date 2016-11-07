@@ -6,15 +6,19 @@ if (process.env.STOP === '1') {
   process.exit(0)
 }
 
-var wire = new i2c(address, { device: '/dev/i2c-1' })
+var wire = new i2c(BOARD, { device: '/dev/i2c-1' })
 
 function normalizeSpeed(speed) {
   return -127 + Math.floor(255 * (speed + 1) / 2)
 }
 
+function normalizeMotor(motor) {
+  return motor === 'left' ? 0 : 1
+}
+
 function setMotor(motor, speed) {
   var value = normalizeSpeed(speed)
-  wire.write([ BOARD, motor === 'left' ? 0 : 1, value ], function(err) {
+  wire.write([ /*BOARD,*/ normalizeMotor(motor), value ], function(err) {
     console.error(err)
   })
 }
