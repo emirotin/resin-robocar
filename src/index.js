@@ -14,6 +14,9 @@ var express = require("express"),
 
 function normalizeSpeed(speed) {
   var result = -127 + Math.floor(255 * (speed + 1) / 2)
+  if (result === 128) {
+    result = 127
+  }
   console.log('Speed:', speed, 'normalized:', result)
   return result
 }

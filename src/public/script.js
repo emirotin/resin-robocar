@@ -23,12 +23,21 @@ function onChange() {
   })
 }
 
-app.set({
-  speed: 0,
-  rot: 0
-})
+function onStop() {
+  app.set({
+    speed: 0,
+    rot: 0
+  })
+}
+
+function onResetRot() {
+  app.set({
+    rot: 0
+  })
+}
 
 app.observe('speed', onChange)
 app.observe('rot', onChange)
 
-ractive.on('stop', onStop)
+app.on('stop', onStop)
+app.on('resetRot', onResetRot)

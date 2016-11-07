@@ -15,13 +15,14 @@
     <script type="text/html" id="tpl">
       <p>
         <label>Speed:</label>
-        <input type="range" min="-0.99" max="0.99" step="0.01" value="{{ speed }}"/>
+        <input type="range" min="-1" max="1" step="0.1" value="{{ speed }}"/>
         <span>({{ speed }})</span>
       </p>
       <p>
         <label>Rot:</label>
-        <input type="range" min="-0.99" max="0.99" step="0.01" value="{{ rot }}"/>
+        <input type="range" min="-1" max="1" step="0.1" value="{{ rot }}"/>
         <span>({{ rot }})</span>
+        <a href="#" on-click="resetRot">reset</a>
       </p>
       <p>
         <button on-click="stop">STOP!</button>
