@@ -24,4 +24,4 @@ function setMotor(motor, speed) {
 }
 
 setMotor('left', 1)
-setMotor('right', 1)
+setMotor('right', -1)
