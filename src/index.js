@@ -17,7 +17,6 @@ function normalizeSpeed(speed) {
   if (result === 128) {
     result = 127
   }
-  console.log('Speed:', speed, 'normalized:', result)
   return result
 }
 
@@ -26,8 +25,8 @@ function normalizeMotor(motor) {
 }
 
 function setMotor(motor, speed) {
-  var value = normalizeSpeed(speed)
-  wire.write([ normalizeMotor(motor), value ], function(err) {
+  console.log('SET:', motor, 'to', speed);
+  wire.write([ normalizeMotor(motor), normalizeSpeed(speed) ], function(err) {
     console.error(err)
   })
 }
