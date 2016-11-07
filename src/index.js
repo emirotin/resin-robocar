@@ -8,6 +8,10 @@ if (process.env.STOP === '1') {
 
 var wire = new i2c(BOARD, { device: '/dev/i2c-1' })
 
+var express = require("express"),
+  bodyParser = require('body-parser'),
+  app = express()
+
 function normalizeSpeed(speed) {
   // the polarity is inverted, thus `-speed`
   var result = -127 + Math.floor(255 * (-speed + 1) / 2)
@@ -26,5 +30,38 @@ function setMotor(motor, speed) {
   })
 }
 
-setMotor('left', 1)
-setMotor('right', -1)
+var speed = 0, rot = 0
+
+app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')
+app.use(express.static(__dirname + '/public'))
+app.use(bodyParser.json())
+
+app.get('/', function(req, res) {
+  res.render('index', { speed: speed, rot: rot })
+})
+
+app.post('/set', function(req, res) {
+  speed = req.body.speed
+  rot = req.body.rot
+  res.end()
+  updateMotors()
+})
+
+function updateMotors() {
+  var speedRight, speedLeft
+  if (rot > 0) {
+    speedLeft = speed
+    speedRight = speed * (1 - rot)
+  } else {
+    speedLeft = speed * (1 + rot)
+    speedRight = speed
+  }
+
+  setMotor('left', speedLeft)
+  setMotor('right', speedRight)
+}
+
+app.listen(process.env.PORT || 80, function () {
+  console.log('Server is listening')
+})
