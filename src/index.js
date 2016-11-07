@@ -22,7 +22,7 @@ function normalizeSpeed(speed) {
 }
 
 function normalizeMotor(motor) {
-  return motor === 'left' ? 0 : 1
+  return motor === 'left' ? 1 : 0
 }
 
 function setMotor(motor, speed) {
