@@ -4,7 +4,7 @@ FROM resin/%%RESIN_MACHINE_NAME%%-alpine-node:6
 # this reduces the size of the docker image.
 RUN apk add --update \
     --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
-    build-base \
+    build-base && \
     rm -rf /var/cache/apk/*
 
 # We set the working directory for the next few commands
