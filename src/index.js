@@ -1,7 +1,7 @@
 var i2c = require('i2c')
 var BOARD = 0x22
 
-if (process.env.STOP) {
+if (process.env.STOP === '1') {
   console.log('STOPPED')
   process.exit(0)
 }
