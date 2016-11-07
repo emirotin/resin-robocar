@@ -55,9 +55,9 @@ function updateMotors() {
   var speedRight, speedLeft
   if (rot > 0) {
     speedLeft = speed
-    speedRight = speed * (1 - rot)
+    speedRight = speed * (1 + rot)
   } else {
-    speedLeft = speed * (1 + rot)
+    speedLeft = speed * (1 - rot)
     speedRight = speed
   }
 
