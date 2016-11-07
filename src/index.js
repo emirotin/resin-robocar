@@ -9,7 +9,8 @@ if (process.env.STOP === '1') {
 var wire = new i2c(BOARD, { device: '/dev/i2c-1' })
 
 function normalizeSpeed(speed) {
-  return -127 + Math.floor(255 * (speed + 1) / 2)
+  // the polatiry is inversed thus `-speed`
+  return -127 + Math.floor(255 * (-speed + 1) / 2)
 }
 
 function normalizeMotor(motor) {
