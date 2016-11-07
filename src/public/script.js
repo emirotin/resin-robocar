@@ -23,5 +23,12 @@ function onChange() {
   })
 }
 
+app.set({
+  speed: 0,
+  rot: 0
+})
+
 app.observe('speed', onChange)
 app.observe('rot', onChange)
+
+ractive.on('stop', onStop)
