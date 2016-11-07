@@ -31,6 +31,7 @@ function setMotor(motor, speed) {
 }
 
 var speed = 0, rot = 0
+updateMotors()
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
