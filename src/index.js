@@ -26,5 +26,5 @@ function setMotor(motor, speed) {
   })
 }
 
-setMotor('left', 0.8)
-setMotor('right', -0.8)
+setMotor('left', 1)
+setMotor('right', -1)
