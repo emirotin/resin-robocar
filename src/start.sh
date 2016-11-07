@@ -1,6 +1,7 @@
 #!/bin/bash
 
 modprobe i2c-dev || true
+modprobe i2c-bcm2708 || true
 
 # Start sshd if we don't use the init system
 if [ "$INITSYSTEM" != "on" ]; then
@@ -12,3 +13,5 @@ while : ; do
   echo "waiting"
   sleep 60
 done
+
+npm start

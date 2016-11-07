@@ -1,0 +1,22 @@
+{
+  "name": "resin-robocar",
+  "version": "1.0.0",
+  "description": "A robocar project based on resin.io, Raspberry Pi 3, and Picon Zero.",
+  "main": "src/index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
+    "i2c": "^0.2.3"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emirotin/resin-robocar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
