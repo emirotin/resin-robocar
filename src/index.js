@@ -13,8 +13,7 @@ var express = require("express"),
   app = express()
 
 function normalizeSpeed(speed) {
-  // the polarity is inverted, thus `-speed`
-  var result = -127 + Math.floor(255 * (-speed + 1) / 2)
+  var result = -127 + Math.floor(255 * (speed + 1) / 2)
   console.log('Speed:', speed, 'normalized:', result)
   return result
 }
