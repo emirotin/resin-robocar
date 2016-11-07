@@ -13,5 +13,3 @@ while : ; do
   echo "waiting"
   sleep 60
 done
-
-npm start

@@ -28,4 +28,4 @@ COPY . ./
 
 
 # Start.sh will run when the container starts
-CMD ["./src/start.sh"]
+CMD ./src/start.sh; npm start
