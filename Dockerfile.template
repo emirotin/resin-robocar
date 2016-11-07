@@ -1,5 +1,7 @@
 FROM resin/%%RESIN_MACHINE_NAME%%-alpine-node:6
 
+ENV INITSYSTEM on
+
 # here we install apt dependencies. We also remove the apt lists in the same step,
 # this reduces the size of the docker image.
 RUN apk add --update \
