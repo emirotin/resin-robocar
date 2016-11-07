@@ -6,7 +6,7 @@ ENV INITSYSTEM on
 # this reduces the size of the docker image.
 RUN apk add --update \
     --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
-    build-base && \
+    build-base raspberrypi && \
     rm -rf /var/cache/apk/*
 
 # We set the working directory for the next few commands
