@@ -80,7 +80,7 @@ updateMotors(getState())
 
 var cameraProc,
   sockets = {},
-  watchingFile = false,
+  fileWatcher = null,
   imagePath = '/' + STREAM_FOLDER + '/' + STREAM_FILE,
   raspistillArgs = [
     "-w", '' + IMAGE_WIDTH,
@@ -95,20 +95,19 @@ function emitNewImage() {
 }
 
 function startStreaming() {
-  if (watchingFile) {
+  if (fileWatcher) {
     return emitNewImage()
   }
   cameraProc = spawn('raspistill', raspistillArgs)
-  watchingFile = true
-  fs.watchFile('.' + imagePath, function(current, previous) {
+  fileWatcher = fs.watch('.' + imagePath, function() {
     emitNewImage()
   })
 }
 
 function stopStreaming() {
-  watchingFile = false
   if (cameraProc) cameraProc.kill()
-  fs.unwatchFile('.' + imagePath)
+  fileWatcher.close()
+  fileWatcher = null
 }
 
 socketIo.on('connection', function(socket) {
