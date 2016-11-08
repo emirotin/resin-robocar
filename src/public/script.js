@@ -45,6 +45,6 @@ app.on('resetRot', onResetRot)
 
 var socket = io()
 
-socket.on('liveStream', function(url) {
+socket.on('image', function(url) {
   app.set('imagePath', url)
 });
