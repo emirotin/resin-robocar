@@ -78,8 +78,7 @@ updateMotors(getState())
 
 // CAMERA LOGIC
 
-var cameraProc,
-  sockets = {},
+var sockets = {},
   fileWatcher = null,
   imagePath = STREAM_FOLDER + '/' + STREAM_FILE,
   raspistillArgs = [
@@ -88,39 +87,40 @@ var cameraProc,
     "-o", imagePath,
     "-t", "999999999",
     "-tl", '' + IMAGE_INTERVAL
-  ]
-
-function emitNewImage() {
-  socketIo.sockets.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
-}
-
-function startStreaming() {
-  if (fileWatcher) {
-    return emitNewImage()
-  }
+  ],
   cameraProc = spawn('raspistill', raspistillArgs)
+
+function watchFile() {
+  if (!fs.existsSync(imagePath)) {
+    setInterval(watchFile, 100)
+    return
+  }
   fileWatcher = fs.watch(imagePath, function() {
     emitNewImage()
   })
 }
 
-function stopStreaming() {
-  if (cameraProc) cameraProc.kill()
-  fileWatcher.close()
-  fileWatcher = null
+function emitNewImage() {
+  socketIo.sockets.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
 }
+
+// function stopStreaming() {
+//   if (cameraProc) cameraProc.kill()
+//   fileWatcher.close()
+//   fileWatcher = null
+// }
 
 socketIo.on('connection', function(socket) {
   sockets[socket.id] = socket
-  startStreaming()
+  //startStreaming()
 
-  socket.on('disconnect', function() {
-    delete sockets[socket.id]
-    // no more sockets, kill the stream
-    if (Object.keys(sockets).length == 0) {
-      stopStreaming()
-    }
-  })
+  // socket.on('disconnect', function() {
+  //   delete sockets[socket.id]
+  //   // no more sockets, kill the stream
+  //   if (Object.keys(sockets).length == 0) {
+  //     stopStreaming()
+  //   }
+  // })
 })
 
 // EXPRESS LOGIC
