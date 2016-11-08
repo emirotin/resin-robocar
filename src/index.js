@@ -84,6 +84,7 @@ var sockets = {},
   raspistillArgs = [
     "-w", '' + IMAGE_WIDTH,
     "-h", '' + IMAGE_HEIGHT,
+    "--quality", 50,
     "-o", imagePath,
     "-t", "999999999",
     "-tl", '' + IMAGE_INTERVAL
@@ -92,43 +93,63 @@ var sockets = {},
 
 function watchFile() {
   if (!fs.existsSync(imagePath)) {
-    setInterval(watchFile, 100)
+    console.log('Image file does not exist')
+    setTimeout(watchFile, 100)
     return
   }
-  fileWatcher = fs.watch(imagePath, emitNewImage)
+  console.log('Image file found')
+  startWatch()
 }
-
-watchFile()
 
 function emitNewImage() {
-  socketIo.sockets.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
+  console.log('Image changed')
+  socketIo.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
 }
 
-// function stopStreaming() {
-//   if (cameraProc) cameraProc.kill()
-//   fileWatcher.close()
-//   fileWatcher = null
-// }
+function startWatch(){
+  var createWatcher = function() {
+    fileWatcher = fs.watch(imagePath, { persistent: true }, watchCallback)
+  }
+  var watchCallback = function(event, filename){
+    if ('change' === event) {
+      emitNewImage()
+    } else if('rename' === event) {
+      fileWatcher.close()
+      createWatcher()
+    }
+  }
 
-/*socketIo.on('connection', function(socket) {
-  //sockets[socket.id] = socket
-  //startStreaming()
+  createWatcher()
+}
 
-  // socket.on('disconnect', function() {
-  //   delete sockets[socket.id]
-  //   // no more sockets, kill the stream
-  //   if (Object.keys(sockets).length == 0) {
-  //     stopStreaming()
-  //   }
-  // })
-})*/
+function stopStreaming() {
+  if (cameraProc) cameraProc.kill()
+  if (fileWatcher) {
+    fileWatcher.close()
+    fileWatcher = null
+  }
+}
+
+//do something when app is closing
+process.on('SIGTERM', function () {
+  writeLog("node application exiting, cleaning up ...")
+  stopStreaming()
+  process.exit(0)
+})
+
+process.on('exit', function (code) {
+  writeLog("node about to exit with code:" + code)
+  stopStreaming()
+})
+
+watchFile()
 
 // EXPRESS LOGIC
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(express.static(__dirname + '/public'))
-app.use(express.static(path.join(__dirname, '..', STREAM_FOLDER)))
+app.use(express.static(STREAM_FOLDER))
 app.use(bodyParser.json())
 
 app.get('/', function(req, res) {

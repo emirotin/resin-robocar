@@ -44,7 +44,22 @@ app.on('stop', onStop)
 app.on('resetRot', onResetRot)
 
 var socket = io()
+var currentImageLoading = null
 
 socket.on('image', function(url) {
-  app.set('imagePath', url)
-});
+  // if (currentImageLoading) {
+  //   console.log('Drop frame')
+  //   return
+  // }
+  currentImageLoading = fetch(url)
+  .then(function(res) {
+    return res.blob()
+  })
+  .then(function(blob) {
+    var objectURL = URL.createObjectURL(blob)
+    document.getElementById('image').src = objectURL
+  })
+  .catch(function () { }).then(function() {
+    currentImageLoading = null
+  })
+})
