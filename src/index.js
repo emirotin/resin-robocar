@@ -96,7 +96,7 @@ function emitNewImage() {
 
 function startStreaming() {
   if (watchingFile) {
-    return emitNewImage();
+    return emitNewImage()
   }
   cameraProc = spawn('raspistill', raspistillArgs)
   watchingFile = true
