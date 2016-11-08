@@ -100,6 +100,8 @@ function watchFile() {
   })
 }
 
+watchFile()
+
 function emitNewImage() {
   socketIo.sockets.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
 }
@@ -111,7 +113,7 @@ function emitNewImage() {
 // }
 
 socketIo.on('connection', function(socket) {
-  sockets[socket.id] = socket
+  //sockets[socket.id] = socket
   //startStreaming()
 
   // socket.on('disconnect', function() {
