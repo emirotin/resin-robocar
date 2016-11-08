@@ -9,7 +9,7 @@ var BOARD = 0x22
 var IMAGE_WIDTH = 320
 var IMAGE_RATIO = 4/3
 var IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO
-var STREAM_FOLDER = 'stream'
+var STREAM_FOLDER = '/data/stream'
 var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
 
@@ -81,11 +81,11 @@ updateMotors(getState())
 var cameraProc,
   sockets = {},
   fileWatcher = null,
-  imagePath = '/' + STREAM_FOLDER + '/' + STREAM_FILE,
+  imagePath = STREAM_FOLDER + '/' + STREAM_FILE,
   raspistillArgs = [
     "-w", '' + IMAGE_WIDTH,
     "-h", '' + IMAGE_HEIGHT,
-    "-o", '.' + imagePath,
+    "-o", imagePath,
     "-t", "999999999",
     "-tl", '' + IMAGE_INTERVAL
   ]
@@ -99,7 +99,7 @@ function startStreaming() {
     return emitNewImage()
   }
   cameraProc = spawn('raspistill', raspistillArgs)
-  fileWatcher = fs.watch('.' + imagePath, function() {
+  fileWatcher = fs.watch(imagePath, function() {
     emitNewImage()
   })
 }
