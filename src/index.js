@@ -95,9 +95,7 @@ function watchFile() {
     setInterval(watchFile, 100)
     return
   }
-  fileWatcher = fs.watch(imagePath, function() {
-    emitNewImage()
-  })
+  fileWatcher = fs.watch(imagePath, emitNewImage)
 }
 
 watchFile()
@@ -112,7 +110,7 @@ function emitNewImage() {
 //   fileWatcher = null
 // }
 
-socketIo.on('connection', function(socket) {
+/*socketIo.on('connection', function(socket) {
   //sockets[socket.id] = socket
   //startStreaming()
 
@@ -123,7 +121,7 @@ socketIo.on('connection', function(socket) {
   //     stopStreaming()
   //   }
   // })
-})
+})*/
 
 // EXPRESS LOGIC
 
