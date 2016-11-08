@@ -9,7 +9,7 @@ var BOARD = 0x22
 var IMAGE_WIDTH = 320
 var IMAGE_RATIO = 4/3
 var IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO
-var STREAM_FOLDER = '/data/stream'
+var STREAM_FOLDER = '/tmp/stream'
 var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
 
@@ -84,7 +84,7 @@ var sockets = {},
   raspistillArgs = [
     "-w", '' + IMAGE_WIDTH,
     "-h", '' + IMAGE_HEIGHT,
-    "--quality", 50,
+    "--quality", 25,
     "-o", imagePath,
     "-t", "999999999",
     "-tl", '' + IMAGE_INTERVAL
@@ -103,7 +103,8 @@ function watchFile() {
 
 function emitNewImage() {
   console.log('Image changed')
-  socketIo.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
+  var buff = fs.readFileSync(imagePath)
+  socketIo.emit('image', buff)
 }
 
 function startWatch(){
