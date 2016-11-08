@@ -86,6 +86,7 @@ var sockets = {},
     "-h", '' + IMAGE_HEIGHT,
     "--quality", 25,
     "-o", imagePath,
+    "-t", "999999999999",
     "-tl", '' + IMAGE_INTERVAL
   ],
   cameraProc = spawn('raspistill', raspistillArgs)
