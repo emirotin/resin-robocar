@@ -1,16 +1,35 @@
-var i2c = require('i2c')
-var BOARD = 0x22
-
 if (process.env.STOP === '1') {
   console.log('STOPPED')
   process.exit(0)
 }
 
-var wire = new i2c(BOARD, { device: '/dev/i2c-1' })
+// CONFIG
+
+var BOARD = 0x22
+var IMAGE_WIDTH = 640
+var IMAGE_RATIO = 4/3
+var IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO
+var STREAM_FOLDER = 'stream'
+var STREAM_FILE = 'image_stream.jpg'
+var IMAGE_INTERVAL = 100
+
+// DEPS
+
+var i2c = require('i2c')
+var fs = require('fs')
+var path = require('path')
+var spawn = require('child_process').spawn
 
 var express = require("express"),
   bodyParser = require('body-parser'),
-  app = express()
+  app = express(),
+  httpServer = require('http').Server(app),
+  socketIo = require('socket.io')(httpServer)
+
+// MOTORS LOGIC
+
+var wire = new i2c(BOARD, { device: '/dev/i2c-1' })
+var _speed = 0, _rot = 0
 
 function normalizeSpeed(speed) {
   var result = -127 + Math.floor(255 * (speed + 1) / 2)
@@ -31,39 +50,99 @@ function setMotor(motor, speed) {
   })
 }
 
-var speed = 0, rot = 0
-updateMotors()
+function updateMotors(newState) {
+  _speed = newState.speed
+  _rot = newState.rot
 
-app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')
-app.use(express.static(__dirname + '/public'))
-app.use(bodyParser.json())
-
-app.get('/', function(req, res) {
-  res.render('index', { speed: speed, rot: rot })
-})
-
-app.post('/set', function(req, res) {
-  speed = req.body.speed
-  rot = req.body.rot
-  res.end()
-  updateMotors()
-})
-
-function updateMotors() {
   var speedRight, speedLeft
-  if (rot > 0) {
-    speedLeft = speed
-    speedRight = speed * (1 - rot)
+  if (_rot > 0) {
+    speedLeft = _speed
+    speedRight = _speed * (1 - _rot)
   } else {
-    speedLeft = speed * (1 + rot)
-    speedRight = speed
+    speedLeft = _speed * (1 + _rot)
+    speedRight = _speed
   }
 
   setMotor('left', speedLeft)
   setMotor('right', speedRight)
 }
 
-app.listen(process.env.PORT || 80, function () {
+function getState() {
+  return {
+    speed: _speed,
+    rot: _rot
+  }
+}
+
+updateMotors(getState())
+
+// CAMERA LOGIC
+
+var cameraProc,
+  sockets = {},
+  watchingFile = false,
+  imagePath = '/' + STREAM_FOLDER + '/' + STREAM_FILE,
+  raspistillArgs = [
+    "-w", '' + IMAGE_WIDTH,
+    "-h", '' + IMAGE_HEIGHT,
+    "-o", '.' + imagePath,
+    "-t", "999999999",
+    "-tl", '' + IMAGE_INTERVAL
+  ]
+
+function emitNewImage() {
+  socketIo.sockets.emit('image', imagePath + '?_t=' + Date.now())
+}
+
+function startStreaming() {
+  if (watchingFile) {
+    return emitNewImage();
+  }
+  cameraProc = spawn('raspistill', raspistillArgs)
+  watchingFile = true
+  fs.watchFile('.' + imagePath, function(current, previous) {
+    emitNewImage()
+  })
+}
+
+function stopStreaming() {
+  watchingFile = false
+  if (cameraProc) cameraProc.kill()
+  fs.unwatchFile('.' + imagePath)
+}
+
+socketIo.on('connection', function(socket) {
+  sockets[socket.id] = socket
+  startStreaming()
+
+  socket.on('disconnect', function() {
+    delete sockets[socket.id]
+    // no more sockets, kill the stream
+    if (Object.keys(sockets).length == 0) {
+      stopStreaming()
+    }
+  })
+})
+
+// EXPRESS LOGIC
+
+app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')
+app.use(express.static(__dirname + '/public'))
+app.use(express.static(path.join(__dirname, STREAM_FOLDER)))
+app.use(bodyParser.json())
+
+app.get('/', function(req, res) {
+  res.render('index', getState())
+})
+
+app.post('/set', function(req, res) {
+  res.end()
+  updateMotors(req.body)
+})
+
+// START ALL THE THINGS
+
+httpServer.listen(process.env.PORT || 80, function () {
   console.log('Server is listening')
 })

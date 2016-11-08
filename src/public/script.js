@@ -1,6 +1,7 @@
 var data = {
   speed: window.INIT_SPEED,
-  rot: window.INIT_ROT
+  rot: window.INIT_ROT,
+  imagePath: null
 }
 
 var app = new Ractive({
@@ -41,3 +42,9 @@ app.observe('rot', onChange)
 
 app.on('stop', onStop)
 app.on('resetRot', onResetRot)
+
+var socket = io()
+
+socket.on('liveStream', function(url) {
+  app.set('imagePath', url)
+});
