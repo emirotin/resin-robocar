@@ -6,7 +6,7 @@ if (process.env.STOP === '1') {
 // CONFIG
 
 var BOARD = 0x22
-var IMAGE_WIDTH = 640
+var IMAGE_WIDTH = 320
 var IMAGE_RATIO = 4/3
 var IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO
 var STREAM_FOLDER = 'stream'
