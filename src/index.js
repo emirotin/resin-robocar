@@ -91,7 +91,7 @@ var cameraProc,
   ]
 
 function emitNewImage() {
-  socketIo.sockets.emit('image', imagePath + '?_t=' + Date.now())
+  socketIo.sockets.emit('image', '/' + STREAM_FILE + '?_t=' + Date.now())
 }
 
 function startStreaming() {
