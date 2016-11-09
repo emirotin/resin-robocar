@@ -94,6 +94,7 @@ var sockets = {},
 
 function spawnCameraProc() {
   cameraProc = spawn('raspistill', raspistillArgs)
+  console.log('[raspistill] started, pid:', cameraProc.pid)
   // cameraProc.stdout.on('data', function(data){
   //   console.log("[raspistill] " + data)
   // })
