@@ -103,7 +103,7 @@ function spawnCameraProc() {
   // })
   cameraProc.on('exit', function(code, signal){
     //if "raspistill" process ends for any reason, stop watching
-    console.log("[raspistill] exited with code:" + code)
+    console.log("[raspistill] exited with code:", code)
     spawnCameraProc()
   })
 }
