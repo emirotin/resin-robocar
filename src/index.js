@@ -12,6 +12,7 @@ var IMAGE_HEIGHT = IMAGE_WIDTH / IMAGE_RATIO
 var STREAM_FOLDER = '/tmp/stream'
 var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
+var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 5
 
 // DEPS
 
@@ -91,8 +92,6 @@ var sockets = {},
   ],
   cameraProc
 
-spawnCameraProc()
-
 function spawnCameraProc() {
   cameraProc = spawn('raspistill', raspistillArgs)
   // cameraProc.stdout.on('data', function(data){
@@ -118,10 +117,19 @@ function watchFile() {
   startWatch()
 }
 
+var stuckTimeout = null
+
+function onWatcherStuck() {
+  cameraProc.kill()
+}
+
 function emitNewImage() {
   // console.log('Image changed')
   var buff = fs.readFileSync(imagePath)
   socketIo.emit('image', buff)
+
+  clearTimeout(stuckTimeout)
+  stuckTimeout = setTimeout(onWatcherStuck, CAMERA_STUCK_TIMEOUT)
 }
 
 function startWatch(){
@@ -160,6 +168,7 @@ process.on('exit', function (code) {
   stopStreaming()
 })
 
+spawnCameraProc()
 watchFile()
 
 // EXPRESS LOGIC
