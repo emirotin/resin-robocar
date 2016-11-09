@@ -89,7 +89,24 @@ var sockets = {},
     "-t", "999999999",
     "-tl", '' + IMAGE_INTERVAL
   ],
+  cameraProc
+
+spawnCameraProc()
+
+function spawnCameraProc() {
   cameraProc = spawn('raspistill', raspistillArgs)
+  cameraProc.stdout.on('data', function(data){
+    console.log("[raspistill] " + data)
+  })
+  cameraProc.stderr.on('data', function(data){
+    console.error("[raspistill error] " + data)
+  })
+  cameraProc.on('exit', function(code, signal){
+    //if "raspistill" process ends for any reason, stop watching
+    console.log("[raspistill] exited with code:" + code)
+    spawnCameraProc()
+  })
+}
 
 function watchFile() {
   if (!fs.existsSync(imagePath)) {
