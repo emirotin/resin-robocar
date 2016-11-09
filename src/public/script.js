@@ -10,6 +10,12 @@ var app = new Ractive({
   data: data
 })
 
+var socket = io({
+  reconnection: true,
+  reconnectionDelay: 200,
+  reconnectionDelayMax: 1400
+})
+
 function onChange() {
   fetch('/set', {
     method: 'POST',
@@ -42,9 +48,6 @@ app.observe('rot', onChange)
 
 app.on('stop', onStop)
 app.on('resetRot', onResetRot)
-
-var socket = io()
-var currentImageLoading = null
 
 socket.on('image', function(buff) {
   var blob = new Blob([ buff ], { type: "image/jpeg" })
