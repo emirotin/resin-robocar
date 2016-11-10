@@ -1,12 +1,12 @@
 module.exports = function getRun(opts) {
-  var state = require('./lib/state')({ speed: 0, rot: 0 })
-  var web = require('./lib/web')({
+  var state = require('./state')({ speed: 0, rot: 0 })
+  var web = require('./web')({
     streamFolder: opt.streamFolder,
     state: state,
     onStateUpdate: updateMotors
   })
-  var motors = require('./lib/motors')({ board: opts.board })
-  var cam = require('./lib/cam')({
+  var motors = require('./motors')({ board: opts.board })
+  var cam = require('./cam')({
     streamFolder: opt.streamFolder,
     streamFile: opts.streamFile,
     imageInterval: opts.imageInterval,
@@ -16,6 +16,7 @@ module.exports = function getRun(opts) {
     imageQuality: opts.imageQuality,
     socketIo: web.socketIo
   })
+  var ports = opts.port
 
   function updateMotors() {
     motors.update(state.get())
@@ -37,7 +38,6 @@ module.exports = function getRun(opts) {
     // start everything
     updateMotors()
     cam.start()
-    var port = process.env.PORT || 80
     web.start(port, function () {
       console.log('Server is listening on', port)
     })

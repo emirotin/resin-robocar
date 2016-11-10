@@ -26,7 +26,8 @@ var run = require('./lib/run')({
   cameraStuckTimeout: CAMERA_STUCK_TIMEOUT,
   imageWidth: IMAGE_WIDTH,
   imageHeight: IMAGE_HEIGHT,
-  imageQuality: IMAGE_QUALITY
+  imageQuality: IMAGE_QUALITY,
+  port: process.env.PORT || 80
 })
 
 // require('./handover')({
