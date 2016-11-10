@@ -1,6 +1,5 @@
 var express = require("express"),
-  bodyParser = require('body-parser'),
-
+  bodyParser = require('body-parser')
 
 module.exports = function init(opts) {
   var app = express(),
