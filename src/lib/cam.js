@@ -17,11 +17,12 @@ module.exports = function init(opts) {
     stuckTimeout = null,
     socketIo = opts.socketIo
 
+  console.log(raspistillArgs)
 
   function spawnCameraProc() {
     cameraProc = spawn('raspistill', raspistillArgs)
     console.log('[raspistill] started, pid:', cameraProc.pid)
-    cameraProc.on('exit', function(code, signal){
+    cameraProc.on('exit', function(code, signal) {
       // if "raspistill" process ends for any reason, respawm
       console.log("[raspistill] exited with code:", code)
       spawnCameraProc()
