@@ -15,14 +15,14 @@ var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
 var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 5
 
-var state = require('./state')({ speed: 0, rot: 0 })
-var web = require('./web')({
+var state = require('./lib/state')({ speed: 0, rot: 0 })
+var web = require('./lib/web')({
   streamFolder: STREAM_FOLDER,
   state: state,
   onStateUpdate: updateMotors
 })
-var motors = require('./motors')({ board: BOARD })
-var cam = require('./state')({
+var motors = require('./lib/motors')({ board: BOARD })
+var cam = require('./lib/state')({
   streamFolder: STREAM_FOLDER,
   streamFile: STREAM_FILE,
   imageInterval: IMAGE_INTERVAL,
