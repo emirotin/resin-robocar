@@ -22,7 +22,7 @@ var web = require('./lib/web')({
   onStateUpdate: updateMotors
 })
 var motors = require('./lib/motors')({ board: BOARD })
-var cam = require('./lib/state')({
+var cam = require('./lib/cam')({
   streamFolder: STREAM_FOLDER,
   streamFile: STREAM_FILE,
   imageInterval: IMAGE_INTERVAL,
