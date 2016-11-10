@@ -34,7 +34,7 @@ var cam = require('./lib/state')({
 })
 
 function updateMotors() {
-  motos.update(state.get())
+  motors.update(state.get())
 }
 
 // hande exits
