@@ -15,44 +15,22 @@ var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
 var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 6
 
-var state = require('./lib/state')({ speed: 0, rot: 0 })
-var web = require('./lib/web')({
-  streamFolder: STREAM_FOLDER,
-  state: state,
-  onStateUpdate: updateMotors
-})
-var motors = require('./lib/motors')({ board: BOARD })
-var cam = require('./lib/cam')({
+var HANDOVER_MASTER_PORT = 8080
+var HANDOVER_SLAVE_PORT = 9090
+
+var run = require('./lib/run')({
+  board: BOARD,
   streamFolder: STREAM_FOLDER,
   streamFile: STREAM_FILE,
   imageInterval: IMAGE_INTERVAL,
   cameraStuckTimeout: CAMERA_STUCK_TIMEOUT,
   imageWidth: IMAGE_WIDTH,
   imageHeight: IMAGE_HEIGHT,
-  imageQuality: IMAGE_QUALITY,
-  socketIo: web.socketIo
+  imageQuality: IMAGE_QUALITY
 })
 
-function updateMotors() {
-  motors.update(state.get())
-}
+// require('./handover')({
+//   masterPort: MASTER_PORT
+// })
 
-// hande exits
-process.on('SIGTERM', function () {
-  console.log("node application exiting, cleaning up ...")
-  cam.stop()
-  process.exit(0)
-})
-
-process.on('exit', function (code) {
-  console.log("node about to exit with code:" + code)
-  cam.stop()
-})
-
-// start everything
-
-updateMotors()
-cam.start()
-web.start(process.env.PORT || 80, function () {
-  console.log('Server is listening')
-})
+run()

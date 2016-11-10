@@ -35,7 +35,6 @@ module.exports = function init(opts) {
       } else {
         console.log('Image file does not exist')
         setTimeout(watchFile, 100)
-        return
       }
     })
   }
