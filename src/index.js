@@ -13,7 +13,7 @@ var IMAGE_QUALITY = 25
 var STREAM_FOLDER = '/tmp/stream'
 var STREAM_FILE = 'image_stream.jpg'
 var IMAGE_INTERVAL = 100
-var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 5
+var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 6
 
 var state = require('./lib/state')({ speed: 0, rot: 0 })
 var web = require('./lib/web')({

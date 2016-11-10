@@ -17,8 +17,6 @@ module.exports = function init(opts) {
     stuckTimeout = null,
     socketIo = opts.socketIo
 
-  console.log(raspistillArgs)
-
   function spawnCameraProc() {
     cameraProc = spawn('raspistill', raspistillArgs)
     console.log('[raspistill] started, pid:', cameraProc.pid)
