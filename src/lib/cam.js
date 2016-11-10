@@ -4,7 +4,7 @@ var spawn = require('child_process').spawn
 
 module.exports = function init(opts) {
   var fileWatcher = null,
-    imagePath = opts.streamFolder + '/' + streamFile,
+    imagePath = opts.streamFolder + '/' + opts.streamFile,
     raspistillArgs = [
       "-w", '' + opts.imageWidth,
       "-h", '' + opts.imageHeight,
