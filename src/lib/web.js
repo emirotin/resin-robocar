@@ -9,7 +9,7 @@ module.exports = function init(opts) {
   app.set('view engine', 'ejs')
   app.set('views', __dirname + '/views')
   app.use(express.static(__dirname + '/public'))
-  app.use(express.static(STREAM_FOLDER))
+  app.use(express.static(opts.streamFolder))
   app.use(bodyParser.json())
 
   app.get('/', function(req, res) {
