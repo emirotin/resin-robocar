@@ -15,7 +15,9 @@ function normalizeMotor(motor) {
 function setMotor(wire ,motor, speed) {
   console.log('SET:', motor, 'to', speed);
   wire.write([ normalizeMotor(motor), normalizeSpeed(speed) ], function(err) {
-    console.error(err)
+    if (err) {
+      console.error('motor error:', err)
+    }
   })
 }
 
