@@ -48,7 +48,7 @@ module.exports = function init(opts) {
     socketIo.emit('image', buff)
 
     clearTimeout(stuckTimeout)
-    stuckTimeout = setTimeout(onWatcherStuck, CAMERA_STUCK_TIMEOUT)
+    stuckTimeout = setTimeout(onWatcherStuck, opts.cameraStuckTimeout)
   }
 
   function startWatch(){
