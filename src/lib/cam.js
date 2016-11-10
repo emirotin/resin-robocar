@@ -28,13 +28,16 @@ module.exports = function init(opts) {
   }
 
   function watchFile() {
-    if (!fs.existsSync(imagePath)) {
-      console.log('Image file does not exist')
-      setTimeout(watchFile, 100)
-      return
-    }
-    console.log('Image file found')
-    startWatch()
+    fs.access(imagePath, fs.constants.R_OK, function (err) {
+      if (!err) {
+        console.log('Image file found')
+        startWatch()
+      } else {
+        console.log('Image file does not exist')
+        setTimeout(watchFile, 100)
+        return
+      }
+    })
   }
 
   function onWatcherStuck() {
