@@ -15,7 +15,7 @@ module.exports = function init(opts) {
     ],
     cameraProc = null,
     stuckTimeout = null,
-    socketIo: opts.socketIo
+    socketIo = opts.socketIo
 
 
   function spawnCameraProc() {
