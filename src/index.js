@@ -30,8 +30,12 @@ var run = require('./lib/run')({
   port: process.env.PORT || 80
 })
 
-// require('./handover')({
-//   masterPort: MASTER_PORT
-// })
+require('./handover')({
+  masterPort: HANDOVER_MASTER_PORT,
+  slavePort: HANDOVER_SLAVE_PORT,
+  run: run.run,
+  stop: run.stop,
+  getHandoverData: run.getState
+})
 
 run()

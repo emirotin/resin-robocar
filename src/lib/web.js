@@ -26,6 +26,9 @@ module.exports = function init(opts) {
     socketIo: socketIo,
     start: function (port, cb) {
       httpServer.listen(port, cb)
+    },
+    stop: function () {
+      httpServer.close()
     }
   }
 }

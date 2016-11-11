@@ -22,7 +22,7 @@ module.exports = function getRun(opts) {
     motors.update(state.get())
   }
 
-  return function run() {
+  function run(handoverData) {
     // hande exits
     process.on('SIGTERM', function () {
       console.log("node application exiting, cleaning up ...")
@@ -35,11 +35,28 @@ module.exports = function getRun(opts) {
       cam.stop()
     })
 
+    // handle handover data
+    if (handoverData) {
+      state.update(handoverData)
+    }
+
     // start everything
     updateMotors()
     cam.start()
     web.start(port, function () {
       console.log('Server is listening on', port)
     })
+  }
+
+  return {
+    run: run,
+    stop: function() {
+      cam.stop()
+      motors.release()
+      web.stop()
+    },
+    getState: function() {
+      return state.get()
+    }
   }
 }

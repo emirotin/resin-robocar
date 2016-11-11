@@ -42,6 +42,9 @@ module.exports = function init(opts) {
   var wire = new i2c(opts.board, { device: '/dev/i2c-1' })
 
   return {
-    update: updateMotors.bind(null, wire)
+    update: updateMotors.bind(null, wire),
+    release: function() {
+      // TBD
+    }
   }
 }
