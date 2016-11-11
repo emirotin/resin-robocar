@@ -44,7 +44,7 @@ module.exports = function init(opts) {
   return {
     update: updateMotors.bind(null, wire),
     release: function() {
-      // TBD
+      wire.close()
     }
   }
 }
