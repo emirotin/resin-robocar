@@ -16,7 +16,7 @@ module.exports = function getRun(opts) {
     imageQuality: opts.imageQuality,
     socketIo: web.socketIo
   })
-  var ports = opts.port
+  var port = opts.port
 
   function updateMotors() {
     motors.update(state.get())
