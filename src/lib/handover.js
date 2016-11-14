@@ -2,7 +2,7 @@ var express = require("express"),
   bodyParser = require('body-parser'),
   request = require('request')
 
-funtion createServer(port, callback) {
+function createServer(port, callback) {
   var app = express()
   app.use(bodyParser.json())
   var server = app.listen(port, function(err) {
