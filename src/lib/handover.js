@@ -6,7 +6,7 @@ function createServer(port, callback) {
   var app = express()
   app.use(bodyParser.json())
   app.on('error', callback)
-  var server = app.listen(port, function(err) {
+  var server = app.listen(port, function() {
     callback(null, app, server)
   })
 }
