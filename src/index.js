@@ -37,5 +37,3 @@ require('./lib/handover')({
   stop: run.stop,
   getHandoverData: run.getState
 })
-
-run()
