@@ -1,13 +1,13 @@
 module.exports = function getRun(opts) {
   var state = require('./state')({ speed: 0, rot: 0 })
   var web = require('./web')({
-    streamFolder: opt.streamFolder,
+    streamFolder: opts.streamFolder,
     state: state,
     onStateUpdate: updateMotors
   })
   var motors = require('./motors')({ board: opts.board })
   var cam = require('./cam')({
-    streamFolder: opt.streamFolder,
+    streamFolder: opts.streamFolder,
     streamFile: opts.streamFile,
     imageInterval: opts.imageInterval,
     cameraStuckTimeout: opts.cameraStuckTimeout,
