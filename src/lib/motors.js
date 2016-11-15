@@ -1,5 +1,3 @@
-var i2c = require('i2c')
-
 function normalizeSpeed(speed) {
   var result = -127 + Math.floor(255 * (speed + 1) / 2)
   if (result === 128) {
@@ -39,11 +37,29 @@ function updateMotors(wire, newState) {
 }
 
 module.exports = function init(opts) {
-  var wire = new i2c(opts.board, { device: '/dev/i2c-1' })
+  var wire = null
 
   return {
-    update: updateMotors.bind(null, wire),
+    start: function() {
+      if (opts.mockMode) {
+        console.log('MOTORS: START: Mock mode, doing nothing.')
+        return
+      }
+      var i2c = require('i2c')
+      wire = new i2c(opts.board, { device: '/dev/i2c-1' })
+    },
+    update: function() {
+      if (opts.mockMode) {
+        console.log('MOTORS: UPDATE: Mock mode, doing nothing.')
+        return
+      }
+      updateMotors.bind(null, wire)
+    },
     release: function() {
+      if (opts.mockMode) {
+        console.log('MOTORS: RELEASE: Mock mode, doing nothing.')
+        return
+      }
       wire.close()
     }
   }

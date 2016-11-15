@@ -18,6 +18,8 @@ var CAMERA_STUCK_TIMEOUT = IMAGE_INTERVAL * 6
 var HANDOVER_MASTER_PORT = 8080
 var HANDOVER_SLAVE_PORT = 9090
 
+var mockMode = !!process.env.MOCK
+
 var run = require('./lib/run')({
   board: BOARD,
   streamFolder: STREAM_FOLDER,
@@ -27,7 +29,8 @@ var run = require('./lib/run')({
   imageWidth: IMAGE_WIDTH,
   imageHeight: IMAGE_HEIGHT,
   imageQuality: IMAGE_QUALITY,
-  port: process.env.PORT || 80
+  port: process.env.PORT || 80,
+  mockMode: mockMode
 })
 
 require('./lib/handover')({
@@ -35,5 +38,6 @@ require('./lib/handover')({
   slavePort: HANDOVER_SLAVE_PORT,
   run: run.run,
   stop: run.stop,
-  getHandoverData: run.getState
+  getHandoverData: run.getState,
+  mockMode: mockMode
 })

@@ -81,9 +81,19 @@ module.exports = function init(opts) {
 
   return {
     start: function() {
+      if (opts.mockMode) {
+        console.log('CAM: START: Mock mode, doing nothing.')
+        return
+      }
       spawnCameraProc()
       watchFile()
     },
-    stop: stopStreaming
+    stop: function () {
+      if (opts.mockMode) {
+        console.log('CAM: STOP: Mock mode, doing nothing.')
+        return
+      }
+      stopStreaming()
+    }
   }
 }

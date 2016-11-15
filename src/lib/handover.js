@@ -1,24 +1,22 @@
 var express = require("express"),
   bodyParser = require('body-parser'),
-  request = require('request')
+  request = require('request'),
+  fs = require('fs')
 
 function createServer(port, callback) {
   var app = express()
   app.use(bodyParser.json())
-  app.on('error', callback)
-  var server = app.listen(port, function() {
-    callback(null, app, server)
-  })
+  var server = app.listen(port, function(err) {
+    callback(err, app, server)
+  }).on('error', callback)
 }
 
-function signalKillMe() {
-  fs.open('/data/resin-kill-me', 'w', function(err, fd) {
-    if (!err) fs.close(fd, function(err) {})
+function httpPost(port, data, callback) {
+  request.post({
+    url: 'http://localhost:' + port,
+    body: data,
+    callback: callback
   })
-}
-
-function httpPost(port, data) {
-  request.post('http://localhost:' + port, data)
 }
 
 module.exports = function handover(opts) {
@@ -28,22 +26,41 @@ module.exports = function handover(opts) {
   var stop = opts.stop
   var getHandoverData = opts.getHandoverData
 
+  function signalKillMe() {
+    if (opts.mockMode) {
+      console.log("HANDOVER: KILL: Mock mode, just exit")
+      process.exit(0)
+    }
+    console.log("HANDOVER: KILL: Creating the /data/resin-kill-me file")
+    fs.open('/data/resin-kill-me', 'w', function(err, fd) {
+      if (!err) fs.close(fd, function(err) {})
+    })
+  }
+
   function createMasterServer(callback) {
-    createServer(masterPort, function(err, masterApp, server) {
+    createServer(masterPort, function(err, masterApp, masterServer) {
       if (err) return callback(err)
 
-      console.log("I'm the master!")
+      console.log("MASTER: I'm the master!")
 
       // whenever on the master port we receive the notification do:
       //  * release master port
       //  * release resources
       //  * post to the slave
       //  * create the kill me file
-      masterApp.post('/', function() {
-        server.close()
+      masterApp.post('/', function(req, res) {
+        console.log("MASTER: ready to die")
+        res.end()
+
+        masterServer.close()
         stop()
-        httpPost(slavePort, getHandoverData())
-        signalKillMe()
+
+        var data = getHandoverData()
+        console.log("MASTER: Passing the handover data to the slave:", data)
+        httpPost(slavePort, data, function () {
+          console.log("MASTER: Done, signalling to be killed")
+          signalKillMe()
+        })
       })
 
       callback(null, masterApp)
@@ -51,18 +68,28 @@ module.exports = function handover(opts) {
   }
 
   function createSlaveServer(callback) {
-    createServer(slavePort, function(err, slaveApp, server) {
+    createServer(slavePort, function(err, slaveApp, slaveServer) {
       if (err) return callback(err)
 
-      console.log("I'm the slave...")
+      console.log("SLAVE: I'm the slave...")
 
       // whenever on the slave port we receive the handover data run the process (with handover data)
       slaveApp.post('/', function(req, res) {
-        run(req.body)
+        console.log(111111);
+        var data = req.body
+        res.end()
+
+        console.log("SLAVE: running with params:", data)
+        run(data)
         // and now start a server on the master port
-        createMasterServer(function() {
+        createMasterServer(function(err) {
+          if (err) {
+            console.log("SLAVE: error restarting in MASTER mode:", err)
+            throw err
+          }
+          console.log("SLAVE: restarted in MASTER mode")
           // and release the slave port
-          server.close()
+          slaveServer.close()
         })
       })
 
@@ -74,18 +101,23 @@ module.exports = function handover(opts) {
   createMasterServer(function(err, masterServer) {
     if (!err) {
       // if ok we're done, run the process (with no handover data)
+      console.log("MASTER: running")
       return run()
     }
 
     // if not listen on the slave port
-    createSlaveServer(function(err, slaveApp, server) {
+    createSlaveServer(function(err, slaveApp, slaveServer) {
       if (err) {
+        console.log("SLAVE: wtf...", err)
         console.error(err)
         process.exit(1)
       }
 
       // then talk to the master port over HTTP to let it know we're ready for handover
-      httpPost(masterPort)
+      console.log("SLAVE: telling the master we're ready to take over")
+      httpPost(masterPort, null, function() {
+        console.log("SLAVE: I told ya")
+      })
     })
   })
 }

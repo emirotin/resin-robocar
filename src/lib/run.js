@@ -3,9 +3,13 @@ module.exports = function getRun(opts) {
   var web = require('./web')({
     streamFolder: opts.streamFolder,
     state: state,
-    onStateUpdate: updateMotors
+    onStateUpdate: updateMotors,
+    mockMode: opts.mockMode
   })
-  var motors = require('./motors')({ board: opts.board })
+  var motors = require('./motors')({
+    board: opts.board,
+    mockMode: opts.mockMode
+  })
   var cam = require('./cam')({
     streamFolder: opts.streamFolder,
     streamFile: opts.streamFile,
@@ -14,7 +18,8 @@ module.exports = function getRun(opts) {
     imageWidth: opts.imageWidth,
     imageHeight: opts.imageHeight,
     imageQuality: opts.imageQuality,
-    socketIo: web.socketIo
+    socketIo: web.socketIo,
+    mockMode: opts.mockMode
   })
   var port = opts.port
 
@@ -25,13 +30,13 @@ module.exports = function getRun(opts) {
   function run(handoverData) {
     // hande exits
     process.on('SIGTERM', function () {
-      console.log("node application exiting, cleaning up ...")
+      console.log("Process exiting, cleaning up...")
       cam.stop()
       process.exit(0)
     })
 
     process.on('exit', function (code) {
-      console.log("node about to exit with code:" + code)
+      console.log("Process about to exit with code:", code)
       cam.stop()
     })
 
