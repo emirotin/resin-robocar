@@ -28,8 +28,9 @@ module.exports = function init(opts) {
   }
 
   function watchFile() {
-    fs.access(imagePath, fs.constants.W_OK, function (err) {
+    fs.open(imagePath, 'a', function (err, fd) {
       if (!err) {
+        fs.closeSync(fd)
         console.log('Image file created')
         startWatch()
       } else {
