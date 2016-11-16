@@ -4,17 +4,29 @@ var express = require("express"),
   fs = require('fs')
 
 function createServer(port, callback) {
-  var app = express()
+  var app = express(),
+    errorHandled = false
+
   app.use(bodyParser.json())
   var server = app.listen(port, function(err) {
     callback(err, app, server)
-  }).on('error', callback)
+  }).on('error', function (err) {
+    if (err.code === 'EADDRINUSE' && !errorHandled) {
+      errorHandled = true
+      callback(err)
+      return
+    }
+    throw err
+  })
 }
 
 function httpPost(port, data, callback) {
+  data = data || {}
+  console.log("HTTP POST to", port, ":", data)
   request.post({
     url: 'http://localhost:' + port,
     body: data,
+    json: true,
     callback: callback
   })
 }
@@ -73,9 +85,9 @@ module.exports = function handover(opts) {
 
       console.log("SLAVE: I'm the slave...")
 
-      // whenever on the slave port we receive the handover data run the process (with handover data)
+      // whenever on the slave port we receive the handover data
+      // run the process (with handover data)
       slaveApp.post('/', function(req, res) {
-        console.log(111111);
         var data = req.body
         res.end()
 
@@ -102,11 +114,12 @@ module.exports = function handover(opts) {
     if (!err) {
       // if ok we're done, run the process (with no handover data)
       console.log("MASTER: running")
-      return run()
+      run()
+      return
     }
 
     // if not listen on the slave port
-    createSlaveServer(function(err, slaveApp, slaveServer) {
+    createSlaveServer(function(err, slaveApp/*, slaveServer*/) {
       if (err) {
         console.log("SLAVE: wtf...", err)
         console.error(err)
@@ -114,9 +127,13 @@ module.exports = function handover(opts) {
       }
 
       // then talk to the master port over HTTP to let it know we're ready for handover
-      console.log("SLAVE: telling the master we're ready to take over")
-      httpPost(masterPort, null, function() {
-        console.log("SLAVE: I told ya")
+      console.log("SLAVE: telling the master I'm ready to take over")
+      httpPost(masterPort, null, function(err) {
+        if (err) {
+          console.error("SLAVE: POST to master error: ", err)
+        } else {
+          console.log("SLAVE: POST to master OK")
+        }
       })
     })
   })
