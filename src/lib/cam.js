@@ -28,12 +28,12 @@ module.exports = function init(opts) {
   }
 
   function watchFile() {
-    fs.access(imagePath, fs.constants.R_OK, function (err) {
+    fs.access(imagePath, fs.constants.R_OK | fs.constants.W_OK, function (err) {
       if (!err) {
-        console.log('Image file found')
+        console.log('Image file created')
         startWatch()
       } else {
-        console.log('Image file does not exist')
+        console.log('Problems creating image file:', err)
         setTimeout(watchFile, 100)
       }
     })
