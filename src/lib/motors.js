@@ -60,7 +60,7 @@ module.exports = function init(opts) {
         console.log('MOTORS: RELEASE: Mock mode, doing nothing.')
         return
       }
-      wire.close()
+      if (wire) wire.close()
     }
   }
 }
