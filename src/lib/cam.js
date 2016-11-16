@@ -28,7 +28,7 @@ module.exports = function init(opts) {
   }
 
   function watchFile() {
-    fs.access(imagePath, fs.constants.R_OK | fs.constants.W_OK, function (err) {
+    fs.access(imagePath, fs.constants.W_OK, function (err) {
       if (!err) {
         console.log('Image file created')
         startWatch()
