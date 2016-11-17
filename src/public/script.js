@@ -1,3 +1,25 @@
+var sliderDecorator = function (node, name) {
+  var app = node._ractive.proxy.ractive
+
+  var slider = new Slider(node, {
+    value: app.get(name)
+  })
+  slider.on('change', function () {
+    app.set(name, slider.getValue())
+  })
+  app.observe(name, function () {
+    slider.setValue(app.get(name))
+  })
+
+  return {
+    teardown: function () {
+      slider.destroy()
+    }
+  }
+}
+
+Ractive.decorators.slider = sliderDecorator
+
 var data = {
   speed: window.INIT_SPEED,
   rot: window.INIT_ROT,

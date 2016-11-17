@@ -2,45 +2,67 @@
 <html>
   <head>
     <title>RoboCar</title>
+    <link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.4.1/css/bootstrap-slider.min.css">
     <style>
-      label {
-        display: inline-block;
-        width: 150px;
-        font-weight: bold;
-      }
-      .still {
-        display: block;
-        width: 320px;
-        height: 240px;
+      .container {
+        padding-top: 30px;
+        padding-bottom: 30px;
       }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root" class="container"></div>
     <script type="text/html" id="tpl">
-      <p>
-        <img class="still" src="" id="image">
-      </p>
-      <p>
-        <label>Speed:</label>
-        <input type="range" min="-1" max="1" step="0.1" value="{{ speed }}"/>
-        <span>({{ speed }})</span>
-      </p>
-      <p>
-        <label>Rot:</label>
-        <input type="range" min="-1" max="1" step="0.1" value="{{ rot }}"/>
-        <span>({{ rot }})</span>
-        <a href="#" on-click="resetRot">reset</a>
-      </p>
-      <p>
-        <button on-click="stop">STOP!</button>
-      </p>
+      <div class="row">
+        <div class="col-xs-3">
+          <input
+            class="slider"
+            as-slider="'speed'"
+            data-provide="slider"
+            data-slider-min="-1"
+            data-slider-max="1"
+            data-slider-step="0.1"
+            data-slider-orientation="vertical"
+            data-slider-reversed="true"
+            data-slider-tooltip="always"
+            data-slider-tooltip_position="right"
+            value="{{ speed }}"/>
+        </div>
+        <div class="col-xs-9">
+          <img class="img-rounded" src="" id="image" width="320" height="240">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3">
+          <button on-click="stop">STOP!</button>
+        </div>
+        <div class="col-xs-9">
+          <input
+            class="slider"
+            as-slider="'rot'"
+            data-provide="slider"
+            data-slider-min="-1"
+            data-slider-max="1"
+            data-slider-step="0.1"
+            data-slider-tooltip="always"
+            data-slider-tooltip_position="bottom"
+            value="{{ rot }}"/>
+          &nbsp;&nbsp;<a href="#" on-click="resetRot">(reset)</a>
+        </div>
+      </div>
+
     </script>
     <script>
       window.INIT_SPEED = <%= speed %>;
       window.INIT_ROT = <%= rot %>;
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ractive/0.8.3/ractive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.4.1/bootstrap-slider.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/script.js"></script>
   </body>
