@@ -28,17 +28,23 @@ module.exports = function getRun(opts) {
     motors.update(state.get())
   }
 
+  function stop() {
+    cam.stop()
+    motors.release()
+    web.stop()
+  }
+
   function run(handoverData) {
     // hande exits
     process.on('SIGTERM', function () {
       console.log("Process exiting, cleaning up...")
-      cam.stop()
+      stop()
       process.exit(0)
     })
 
     process.on('exit', function (code) {
       console.log("Process about to exit with code:", code)
-      cam.stop()
+      stop()
     })
 
     // handle handover data
@@ -56,11 +62,7 @@ module.exports = function getRun(opts) {
 
   return {
     run: run,
-    stop: function() {
-      cam.stop()
-      motors.release()
-      web.stop()
-    },
+    stop: stop,
     getState: function() {
       return state.get()
     }
