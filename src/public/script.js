@@ -76,11 +76,11 @@ app.observe('rot', onChange)
 app.on('stop', onStop)
 app.on('resetRot', onResetRot)
 
-// socket.on('image', function(buff) {
-//   var blob = new Blob([ buff ], { type: "image/jpeg" })
-//   var objectURL = URL.createObjectURL(blob)
-//   document.getElementById('image').src = objectURL
-// })
+socket.on('image', function(buff) {
+  var blob = new Blob([ buff ], { type: "image/jpeg" })
+  var objectURL = URL.createObjectURL(blob)
+  document.getElementById('image').src = objectURL
+})
 
 function incValue(name, sign) {
   var val = app.get(name) + sign * data.inputStep
