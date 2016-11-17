@@ -23,7 +23,10 @@ Ractive.decorators.slider = sliderDecorator
 var data = {
   speed: window.INIT_SPEED,
   rot: window.INIT_ROT,
-  imagePath: null
+  imagePath: null,
+  inputStep: 0.1,
+  inputMin: -1,
+  inputMax: 1
 }
 
 var app = new Ractive({
@@ -76,3 +79,19 @@ socket.on('image', function(buff) {
   var objectURL = URL.createObjectURL(blob)
   document.getElementById('image').src = objectURL
 })
+
+function incValue(name, sign) {
+  var val = app.get(name) + sign * data.inputStep
+  if (val >= data.inputMin && val <= data.inputMax) {
+    app.set(name, val)
+  }
+}
+
+window.onkeyup = function (event) {
+  switch (event.key) {
+    case "ArrowUp": incValue('speed', 1); break;
+    case "ArrowDown": incValue('speed', -1); break;
+    case "ArrowRight": incValue('rot', 1); break;
+    case "ArrowLeft": incValue('rot', -1); break;
+  }
+}

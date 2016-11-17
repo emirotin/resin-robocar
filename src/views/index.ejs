@@ -24,13 +24,13 @@
             class="slider"
             as-slider="'speed'"
             data-provide="slider"
-            data-slider-min="-1"
-            data-slider-max="1"
-            data-slider-step="0.1"
+            data-slider-min="{{ inputMin }}"
+            data-slider-max="{{ inputMax }}"
+            data-slider-step="{{ inputStep }}"
             data-slider-orientation="vertical"
             data-slider-reversed="true"
             data-slider-tooltip="always"
-            data-slider-tooltip_position="right"
+            data-slider-tooltip-position="right"
             value="{{ speed }}"/>
         </div>
         <div class="col-xs-9">
@@ -46,11 +46,11 @@
             class="slider"
             as-slider="'rot'"
             data-provide="slider"
-            data-slider-min="-1"
-            data-slider-max="1"
-            data-slider-step="0.1"
+            data-slider-min="{{ inputMin }}"
+            data-slider-max="{{ inputMax }}"
+            data-slider-step="{{ inputStep }}"
             data-slider-tooltip="always"
-            data-slider-tooltip_position="bottom"
+            data-slider-tooltip-position="bottom"
             value="{{ rot }}"/>
           &nbsp;&nbsp;<a href="#" on-click="resetRot">(reset)</a>
         </div>
