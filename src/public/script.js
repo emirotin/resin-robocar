@@ -20,13 +20,15 @@ var sliderDecorator = function (node, name) {
 
 Ractive.decorators.slider = sliderDecorator
 
+var EMPTY_IMAGE = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+
 var data = {
   speed: window.INIT_SPEED,
   rot: window.INIT_ROT,
-  imagePath: null,
   inputStep: 0.1,
   inputMin: -1,
-  inputMax: 1
+  inputMax: 1,
+  emptyImage: EMPTY_IMAGE
 }
 
 var app = new Ractive({
