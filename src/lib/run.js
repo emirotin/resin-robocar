@@ -24,6 +24,7 @@ module.exports = function getRun(opts) {
   var port = opts.port
 
   function updateMotors() {
+    console.log("UPDATE MOTORS", state.get())
     motors.update(state.get())
   }
 
