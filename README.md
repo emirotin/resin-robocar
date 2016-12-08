@@ -25,7 +25,7 @@ $ git push resin master
 __Note:__ If you may need to use the `--force` option for the git push if you have previously deployed another repo to this application.
 
 ### Troubleshooting
-At after pushing you may encounter and re-sshing back into the device you may encounter this error message as the host key changes when an update occurs on the device.
+After pushing and re-sshing back into the device, you may encounter this error message as the host key changes when an update occurs on the device.
 
 
 ```sh
